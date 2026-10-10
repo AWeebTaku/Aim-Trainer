@@ -1,0 +1,6 @@
+__pycache__/
+highscores.json
+build/
+*.spec
+.claude_session
+dist/

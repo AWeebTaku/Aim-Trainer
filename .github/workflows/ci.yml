@@ -1,0 +1,25 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - name: Headless smoke test
+        env: { SDL_VIDEODRIVER: dummy, SDL_AUDIODRIVER: dummy }
+        run: |
+          python - <<'PY'
+          import Shootit as S
+          g = S.Game()
+          for d in S.DIFFICULTIES:
+              g.start(d)
+              for _ in range(3000):
+                  g.update(16)
+                  if g.targets: g.click((g.targets[0].x, g.targets[0].y))
+                  g.draw_play()
+                  if g.state == "over": break
+              g.draw_over(); g.draw_menu()
+          PY
