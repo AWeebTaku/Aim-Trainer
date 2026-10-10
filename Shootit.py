@@ -11,7 +11,17 @@ WIDTH, HEIGHT = 900, 650
 BAR_H = 56
 PAD = 40
 FPS = 60
-SCORES_FILE = Path(__file__).with_name("highscores.json")
+
+
+def scores_path():
+    # per-user data dir: survives packaged one-file builds (their install dir is a wiped temp folder)
+    try:
+        return Path(pygame.system.get_pref_path("Shootit", "Shootit")) / "highscores.json"
+    except Exception:
+        return Path.home() / ".shootit_highscores.json"
+
+
+SCORES_FILE = scores_path()
 
 BG = (10, 14, 28)
 GRID = (20, 28, 52)
