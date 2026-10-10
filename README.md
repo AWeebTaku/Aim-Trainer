@@ -105,7 +105,3 @@ pyinstaller --onefile --noconsole --name Shootit Shootit.py   # use --windowed i
 ```
 
 The result is in `dist/` (not tracked in git).
-
-## License
-
-MIT
