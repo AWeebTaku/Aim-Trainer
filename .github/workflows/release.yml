@@ -6,6 +6,10 @@ on:
     branches: [main]
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to (re)attach these builds to, e.g. v1.0.0. Leave empty to only build."
+        required: false
 
 jobs:
   build:
@@ -37,16 +41,33 @@ jobs:
           ditto -c -k --sequesterRsrc --keepParent dist/Shootit.app Shootit-${{ matrix.name }}.zip
       - name: Build (Linux)
         if: runner.os == 'Linux'
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           pyinstaller --onefile --name Shootit Shootit.py
           tar -czf Shootit-${{ matrix.name }}.tar.gz -C dist Shootit
+
+          # distro packages (.deb Debian/Ubuntu, .rpm Fedora/RHEL/openSUSE, .pkg.tar.zst Arch) via fpm
+          VERSION="${TAG#v}"; [[ "$VERSION" =~ ^[0-9][0-9.]*$ ]] || VERSION=0.0.0
+          sudo apt-get update && sudo apt-get install -y ruby rpm libarchive-tools zstd
+          sudo gem install --no-document fpm
+          for fmt in "deb deb" "rpm rpm" "pacman pkg.tar.zst"; do
+            set -- $fmt
+            fpm -s dir -t "$1" -n shootit -v "$VERSION" -a native \
+              --description "Arcade aim trainer" --url "https://github.com/${{ github.repository }}" \
+              --license MIT --maintainer "${{ github.repository_owner }}" \
+              -p "Shootit-${{ matrix.name }}.$2" \
+              dist/Shootit=/usr/bin/shootit \
+              packaging/shootit.desktop=/usr/share/applications/shootit.desktop \
+              assets/shootit.png=/usr/share/icons/hicolor/256x256/apps/shootit.png
+          done
       - uses: actions/upload-artifact@v4
         with:
           name: Shootit-${{ matrix.name }}
           path: Shootit-${{ matrix.name }}.*
 
   release:
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || inputs.tag != ''
     needs: build
     runs-on: ubuntu-latest
     permissions: { contents: write }
@@ -55,5 +76,6 @@ jobs:
         with: { path: artifacts, merge-multiple: true }
       - uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
           files: artifacts/*
           generate_release_notes: true

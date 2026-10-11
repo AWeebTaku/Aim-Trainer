@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Shootit
+Comment=Arcade aim trainer
+Exec=shootit
+Icon=shootit
+Categories=Game;ArcadeGame;
+Terminal=false

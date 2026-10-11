@@ -26,10 +26,22 @@ Grab the build for your system from the [Releases page](../../releases/latest):
 | Windows 10/11 (x64) | `Shootit-windows-x64.zip` | Unzip, double-click `Shootit.exe`. If SmartScreen warns, choose *More info > Run anyway* (the build is unsigned) |
 | macOS, Apple Silicon | `Shootit-macos-arm64.zip` | Unzip, then right-click `Shootit.app` > *Open* the first time (unsigned) |
 | macOS, Intel | `Shootit-macos-x64.zip` | Same as above |
-| Linux x86_64 (any distro) | `Shootit-linux-x64.tar.gz` | `tar xzf Shootit-linux-x64.tar.gz && ./Shootit` |
-| Linux ARM64 (Raspberry Pi 4/5, etc.) | `Shootit-linux-arm64.tar.gz` | Same as above |
+| Linux, any distro | `Shootit-linux-x64.tar.gz` / `Shootit-linux-arm64.tar.gz` | `tar xzf Shootit-linux-x64.tar.gz && ./Shootit` |
 
-The Linux builds need a desktop session (X11 or Wayland) and glibc 2.35 or newer (Ubuntu 22.04+, Debian 12+, Fedora 36+, Arch). On older systems, run from source.
+### Linux packages
+
+Native packages install `shootit` to `/usr/bin` and add a menu entry with an icon. Use `x64` for Intel/AMD and `arm64` for ARM (Raspberry Pi 4/5, etc.).
+
+| Distro | File | Install | Remove |
+|--------|------|---------|--------|
+| Debian, Ubuntu, Mint, Pop!_OS | `Shootit-linux-x64.deb` | `sudo apt install ./Shootit-linux-x64.deb` | `sudo apt remove shootit` |
+| Fedora, RHEL, Rocky, Alma | `Shootit-linux-x64.rpm` | `sudo dnf install ./Shootit-linux-x64.rpm` | `sudo dnf remove shootit` |
+| openSUSE | `Shootit-linux-x64.rpm` | `sudo zypper --no-gpg-checks install ./Shootit-linux-x64.rpm` | `sudo zypper remove shootit` |
+| Arch, Manjaro, EndeavourOS | `Shootit-linux-x64.pkg.tar.zst` | `sudo pacman -U Shootit-linux-x64.pkg.tar.zst` | `sudo pacman -R shootit` |
+
+Swap `x64` for `arm64` in the file names on ARM machines. Then launch from your app menu or run `shootit`.
+
+The packages are unsigned and need no extra dependencies. All Linux builds need a desktop session (X11 or Wayland) and glibc 2.35 or newer (Ubuntu 22.04+, Debian 12+, Fedora 36+, current Arch). On older systems, run from source.
 
 ## Run from source
 
