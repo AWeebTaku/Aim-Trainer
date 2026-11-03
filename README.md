@@ -26,29 +26,23 @@ A fast arcade aim trainer built with Python and [pygame-ce](https://pyga.me/). F
 
 ## Download
 
-Grab the build for your system from the [Releases page](../../releases/latest):
+Grab the file for your system from the [Releases page](../../releases/latest). `x64` is Intel/AMD, `arm64` is ARM (Apple Silicon, Raspberry Pi 4/5, etc.).
 
-| System | File | How to run |
-|--------|------|-----------|
-| Windows 10/11 (x64) | `Shootit-windows-x64.zip` | Unzip, double-click `Shootit.exe`. If SmartScreen warns, choose *More info > Run anyway* (the build is unsigned) |
-| macOS, Apple Silicon | `Shootit-macos-arm64.zip` | Unzip, then right-click `Shootit.app` > *Open* the first time (unsigned) |
-| macOS, Intel | `Shootit-macos-x64.zip` | Same as above |
-| Linux, any distro | `Shootit-linux-x64.tar.gz` / `Shootit-linux-arm64.tar.gz` | `tar xzf Shootit-linux-x64.tar.gz && ./Shootit` |
+| System | File | Install |
+|--------|------|---------|
+| Windows 10/11 | `Shootit-windows-x64-setup.exe` (current user, no admin needed) or `Shootit-windows-x64.msi` (all users) | Double-click it. If SmartScreen warns, choose *More info > Run anyway* (unsigned) |
+| macOS | `Shootit-macos-arm64.dmg` (Apple Silicon) or `Shootit-macos-x64.dmg` (Intel) | Open the dmg, drag Shootit to Applications. First launch: right-click > *Open* (unsigned) |
+| Debian, Ubuntu, Mint | `Shootit-linux-x64.deb` | `sudo apt install ./Shootit-linux-x64.deb` |
+| Fedora, openSUSE | `Shootit-linux-x64.rpm` | Fedora: `sudo dnf install ./Shootit-linux-x64.rpm`. openSUSE: `sudo zypper --no-gpg-checks install ./Shootit-linux-x64.rpm` |
+| Arch, Manjaro | `Shootit-linux-x64.pkg.tar.zst` | `sudo pacman -U Shootit-linux-x64.pkg.tar.zst` |
+| Any Linux | `Shootit-linux-x64.AppImage` | `chmod +x Shootit-linux-x64.AppImage && ./Shootit-linux-x64.AppImage` |
 
-### Linux packages
+On ARM Linux, replace `x64` with `arm64` in the file names.
 
-Native packages install `shootit` to `/usr/bin` and add a menu entry with an icon. Use `x64` for Intel/AMD and `arm64` for ARM (Raspberry Pi 4/5, etc.).
-
-| Distro | File | Install | Remove |
-|--------|------|---------|--------|
-| Debian, Ubuntu, Mint, Pop!_OS | `Shootit-linux-x64.deb` | `sudo apt install ./Shootit-linux-x64.deb` | `sudo apt remove shootit` |
-| Fedora, RHEL, Rocky, Alma | `Shootit-linux-x64.rpm` | `sudo dnf install ./Shootit-linux-x64.rpm` | `sudo dnf remove shootit` |
-| openSUSE | `Shootit-linux-x64.rpm` | `sudo zypper --no-gpg-checks install ./Shootit-linux-x64.rpm` | `sudo zypper remove shootit` |
-| Arch, Manjaro, EndeavourOS | `Shootit-linux-x64.pkg.tar.zst` | `sudo pacman -U Shootit-linux-x64.pkg.tar.zst` | `sudo pacman -R shootit` |
-
-Swap `x64` for `arm64` in the file names on ARM machines. Then launch from your app menu or run `shootit`.
-
-The packages are unsigned and need no extra dependencies. All Linux builds need a desktop session (X11 or Wayland) and glibc 2.35 or newer (Ubuntu 22.04+, Debian 12+, Fedora 36+, current Arch). On older systems, run from source.
+- **Remove (Linux packages):** `sudo apt remove shootit`, `sudo dnf remove shootit`, `sudo zypper remove shootit` or `sudo pacman -R shootit`. The deb, rpm and pacman packages add a menu entry, or run `shootit` in a terminal.
+- **AppImage** needs FUSE 2 (Ubuntu: `sudo apt install libfuse2`, or `libfuse2t64` on 24.04+). Without it, run `./Shootit-linux-x64.AppImage --appimage-extract-and-run`.
+- **Linux requirements:** a desktop session (X11 or Wayland) and glibc 2.35 or newer (Ubuntu 22.04+, Debian 12+, Fedora 36+, current Arch). On older systems, run from source.
+- **Windows and macOS** installers are unsigned, so you will see an "unknown developer" warning on first run.
 
 ## Run from source
 
@@ -124,4 +118,4 @@ pip install pyinstaller
 pyinstaller --onefile --noconsole --name Shootit main.py   # use --windowed instead on macOS
 ```
 
-The result is in `dist/` (not tracked in git).
+The result is in `dist/` (not tracked in git). The installers (setup.exe, msi, dmg, deb, rpm, pkg.tar.zst, AppImage) are built in CI: see `.github/workflows/release.yml` and `packaging/`.

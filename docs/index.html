@@ -129,9 +129,12 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 <section class="rv" id="install">
 <h2>Download</h2>
 <dl>
-<dt>Windows</dt><dd><a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-windows-x64.zip">Shootit-windows-x64.zip</a></dd>
-<dt>macOS</dt><dd><a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-macos-arm64.zip">Apple Silicon</a> or <a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-macos-x64.zip">Intel</a></dd>
-<dt>Linux</dt><dd><a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-linux-x64.tar.gz">x86_64</a> or <a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-linux-arm64.tar.gz">ARM64</a></dd>
+<dt>Windows</dt><dd><a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-windows-x64-setup.exe">Installer (.exe)</a> or <a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-windows-x64.msi">.msi</a></dd>
+<dt>macOS</dt><dd><a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-macos-arm64.dmg">Apple Silicon (.dmg)</a> or <a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-macos-x64.dmg">Intel (.dmg)</a></dd>
+<dt>Debian, Ubuntu</dt><dd><a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-linux-x64.deb">.deb</a> (<a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-linux-arm64.deb">ARM64</a>)</dd>
+<dt>Fedora, openSUSE</dt><dd><a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-linux-x64.rpm">.rpm</a> (<a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-linux-arm64.rpm">ARM64</a>)</dd>
+<dt>Arch, Manjaro</dt><dd><a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-linux-x64.pkg.tar.zst">.pkg.tar.zst</a> (<a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-linux-arm64.pkg.tar.zst">ARM64</a>)</dd>
+<dt>Any Linux</dt><dd><a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-linux-x64.AppImage">.AppImage</a> (<a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-linux-arm64.AppImage">ARM64</a>)</dd>
 <dt>From source</dt><dd><code>pip install pygame-ce &amp;&amp; python main.py</code></dd>
 </dl>
 <p id="rel" hidden></p>
@@ -363,8 +366,8 @@ document.querySelectorAll(".rv").forEach(el=>io.observe(el));
 
 /* button for the visitor's OS */
 const ua=navigator.userAgent,base="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-";
-const f=/Win/.test(ua)?["windows-x64.zip","Windows"]:/Mac/.test(ua)?["macos-arm64.zip","macOS"]:/Linux/.test(ua)&&!/Android/.test(ua)?["linux-x64.tar.gz","Linux"]:null;
-if(f){const a=document.getElementById("dl");a.href=base+f[0];a.textContent="Download for "+f[1]}
+const f=/Win/.test(ua)?["windows-x64-setup.exe","Windows"]:/Mac/.test(ua)?["","macOS"]:/Linux/.test(ua)&&!/Android/.test(ua)?["linux-x64.AppImage","Linux"]:null;
+if(f){const a=document.getElementById("dl");a.href=f[0]?base+f[0]:"#install";a.textContent="Download for "+f[1]}  /* Macs hide Apple Silicon vs Intel from the browser, so macOS jumps to the list */
 
 /* latest release info from GitHub; silently skipped if the API is unreachable */
 fetch("https://api.github.com/repos/AWeebTaku/Aim-Trainer/releases/latest",{headers:{Accept:"application/vnd.github+json"}})
