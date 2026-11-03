@@ -1,4 +1,4 @@
-# Shootit
+# Aim Trainer
 
 ![CI](../../actions/workflows/ci.yml/badge.svg) ![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
@@ -30,17 +30,17 @@ Grab the file for your system from the [Releases page](../../releases/latest). `
 
 | System | File | Install |
 |--------|------|---------|
-| Windows 10/11 | `Shootit-windows-x64-setup.exe` (current user, no admin needed) or `Shootit-windows-x64.msi` (all users) | Double-click it. If SmartScreen warns, choose *More info > Run anyway* (unsigned) |
-| macOS | `Shootit-macos-arm64.dmg` (Apple Silicon) or `Shootit-macos-x64.dmg` (Intel) | Open the dmg, drag Shootit to Applications. First launch: right-click > *Open* (unsigned) |
-| Debian, Ubuntu, Mint | `Shootit-linux-x64.deb` | `sudo apt install ./Shootit-linux-x64.deb` |
-| Fedora, openSUSE | `Shootit-linux-x64.rpm` | Fedora: `sudo dnf install ./Shootit-linux-x64.rpm`. openSUSE: `sudo zypper --no-gpg-checks install ./Shootit-linux-x64.rpm` |
-| Arch, Manjaro | `Shootit-linux-x64.pkg.tar.zst` | `sudo pacman -U Shootit-linux-x64.pkg.tar.zst` |
-| Any Linux | `Shootit-linux-x64.AppImage` | `chmod +x Shootit-linux-x64.AppImage && ./Shootit-linux-x64.AppImage` |
+| Windows 10/11 | `Aim-Trainer-windows-x64-setup.exe` (current user, no admin needed) or `Aim-Trainer-windows-x64.msi` (all users) | Double-click it. If SmartScreen warns, choose *More info > Run anyway* (unsigned) |
+| macOS | `Aim-Trainer-macos-arm64.dmg` (Apple Silicon) or `Aim-Trainer-macos-x64.dmg` (Intel) | Open the dmg, drag Aim Trainer to Applications. First launch: right-click > *Open* (unsigned) |
+| Debian, Ubuntu, Mint | `Aim-Trainer-linux-x64.deb` | `sudo apt install ./Aim-Trainer-linux-x64.deb` |
+| Fedora, openSUSE | `Aim-Trainer-linux-x64.rpm` | Fedora: `sudo dnf install ./Aim-Trainer-linux-x64.rpm`. openSUSE: `sudo zypper --no-gpg-checks install ./Aim-Trainer-linux-x64.rpm` |
+| Arch, Manjaro | `Aim-Trainer-linux-x64.pkg.tar.zst` | `sudo pacman -U Aim-Trainer-linux-x64.pkg.tar.zst` |
+| Any Linux | `Aim-Trainer-linux-x64.AppImage` | `chmod +x Aim-Trainer-linux-x64.AppImage && ./Aim-Trainer-linux-x64.AppImage` |
 
 On ARM Linux, replace `x64` with `arm64` in the file names.
 
-- **Remove (Linux packages):** `sudo apt remove shootit`, `sudo dnf remove shootit`, `sudo zypper remove shootit` or `sudo pacman -R shootit`. The deb, rpm and pacman packages add a menu entry, or run `shootit` in a terminal.
-- **AppImage** needs FUSE 2 (Ubuntu: `sudo apt install libfuse2`, or `libfuse2t64` on 24.04+). Without it, run `./Shootit-linux-x64.AppImage --appimage-extract-and-run`.
+- **Remove (Linux packages):** `sudo apt remove aim-trainer`, `sudo dnf remove aim-trainer`, `sudo zypper remove aim-trainer` or `sudo pacman -R aim-trainer`. The deb, rpm and pacman packages add a menu entry, or run `aim-trainer` in a terminal.
+- **AppImage** needs FUSE 2 (Ubuntu: `sudo apt install libfuse2`, or `libfuse2t64` on 24.04+). Without it, run `./Aim-Trainer-linux-x64.AppImage --appimage-extract-and-run`.
 - **Linux requirements:** a desktop session (X11 or Wayland) and glibc 2.35 or newer (Ubuntu 22.04+, Debian 12+, Fedora 36+, current Arch). On older systems, run from source.
 - **Windows and macOS** installers are unsigned, so you will see an "unknown developer" warning on first run.
 
@@ -86,7 +86,7 @@ Arch and other distros with "externally managed" Python (PEP 668) require the vi
 
 - **Use `pygame-ce`, not `pygame`.** They share the `import pygame` name and conflict when both are installed. If you see font or import errors (common on Python 3.13+), run `pip uninstall pygame && pip install --force-reinstall pygame-ce`.
 - **No window on Wayland-only setups:** try `SDL_VIDEODRIVER=wayland python main.py` or `SDL_VIDEODRIVER=x11 ...`.
-- **High scores** are stored per user: `~/.local/share/Shootit/Shootit/` (Linux), `~/Library/Application Support/Shootit/Shootit/` (macOS), `%APPDATA%\Shootit\Shootit\` (Windows). Delete `highscores.json` there to reset.
+- **High scores** are stored per user: `~/.local/share/Aim-Trainer/Aim-Trainer/` (Linux), `~/Library/Application Support/Aim-Trainer/Aim-Trainer/` (macOS), `%APPDATA%\Aim-Trainer\Aim-Trainer\` (Windows). Delete `highscores.json` there to reset.
 
 ## Controls
 
@@ -115,7 +115,7 @@ To build locally for your own OS:
 
 ```bash
 pip install pyinstaller
-pyinstaller --onefile --noconsole --name Shootit main.py   # use --windowed instead on macOS
+pyinstaller --onefile --noconsole --name Aim-Trainer main.py   # use --windowed instead on macOS
 ```
 
 The result is in `dist/` (not tracked in git). The installers (setup.exe, msi, dmg, deb, rpm, pkg.tar.zst, AppImage) are built in CI: see `.github/workflows/release.yml` and `packaging/`.

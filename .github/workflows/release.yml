@@ -42,63 +42,63 @@ jobs:
       # ---------------- Windows: setup.exe (current user) + msi ----------------
       - name: Build app (Windows)
         if: runner.os == 'Windows'
-        run: pyinstaller --noconfirm --noconsole --name Shootit --icon assets/shootit.png main.py
+        run: pyinstaller --noconfirm --noconsole --name Aim-Trainer --icon assets/icon.png main.py
       - name: Installers (Windows)
         if: runner.os == 'Windows'
         run: |
           choco install innosetup -y --no-progress
-          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DVersion=${{ steps.v.outputs.version }}" "/DOutName=Shootit-${{ matrix.name }}-setup" packaging\windows\shootit.iss
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DVersion=${{ steps.v.outputs.version }}" "/DOutName=Aim-Trainer-${{ matrix.name }}-setup" packaging\windows\aim-trainer.iss
           dotnet tool install --global wix --version 5.0.2
-          wix build packaging\windows\Package.wxs -d "Version=${{ steps.v.outputs.version }}" -d "DistDir=${{ github.workspace }}\dist\Shootit" -o "Shootit-${{ matrix.name }}.msi"
+          wix build packaging\windows\Package.wxs -d "Version=${{ steps.v.outputs.version }}" -d "DistDir=${{ github.workspace }}\dist\Aim-Trainer" -o "Aim-Trainer-${{ matrix.name }}.msi"
 
       # ---------------- macOS: dmg ----------------
       - name: Build app and dmg (macOS)
         if: runner.os == 'macOS'
         run: |
-          pyinstaller --noconfirm --windowed --name Shootit --icon assets/shootit.png main.py
-          mkdir dmg-stage && cp -R dist/Shootit.app dmg-stage/ && ln -s /Applications dmg-stage/Applications
-          hdiutil create -volname Shootit -srcfolder dmg-stage -ov -format UDZO "Shootit-${{ matrix.name }}.dmg"
+          pyinstaller --noconfirm --windowed --name Aim-Trainer --icon assets/icon.png main.py
+          mkdir dmg-stage && cp -R dist/Aim-Trainer.app dmg-stage/ && ln -s /Applications dmg-stage/Applications
+          hdiutil create -volname Aim-Trainer -srcfolder dmg-stage -ov -format UDZO "Aim-Trainer-${{ matrix.name }}.dmg"
 
       # ---------------- Linux: deb, rpm, pkg.tar.zst, AppImage ----------------
       - name: Build app (Linux)
         if: runner.os == 'Linux'
-        run: pyinstaller --noconfirm --name Shootit main.py
+        run: pyinstaller --noconfirm --name Aim-Trainer main.py
       - name: Packages (Linux)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update && sudo apt-get install -y ruby rpm libarchive-tools zstd
           sudo gem install --no-document fpm
 
-          # one staging tree shared by deb, rpm and pacman: app in /opt/shootit, launcher at /usr/bin/shootit
+          # one staging tree shared by deb, rpm and pacman: app in /opt/aim-trainer, launcher at /usr/bin/aim-trainer
           stage=$(mktemp -d)
           install -d "$stage/opt" "$stage/usr/bin" "$stage/usr/share/applications" "$stage/usr/share/icons/hicolor/256x256/apps"
-          cp -r dist/Shootit "$stage/opt/shootit"
-          ln -s /opt/shootit/Shootit "$stage/usr/bin/shootit"
-          cp packaging/shootit.desktop "$stage/usr/share/applications/"
-          cp assets/shootit.png "$stage/usr/share/icons/hicolor/256x256/apps/shootit.png"
+          cp -r dist/Aim-Trainer "$stage/opt/aim-trainer"
+          ln -s /opt/aim-trainer/Aim-Trainer "$stage/usr/bin/aim-trainer"
+          cp packaging/aim-trainer.desktop "$stage/usr/share/applications/"
+          cp assets/icon.png "$stage/usr/share/icons/hicolor/256x256/apps/aim-trainer.png"
           for fmt in "deb deb" "rpm rpm" "pacman pkg.tar.zst"; do
             set -- $fmt
-            fpm -s dir -t "$1" -n shootit -v "${{ steps.v.outputs.version }}" -a native \
+            fpm -s dir -t "$1" -n aim-trainer -v "${{ steps.v.outputs.version }}" -a native \
               --description "Arcade aim trainer" --url "https://github.com/${{ github.repository }}" \
               --license MIT --maintainer "${{ github.repository_owner }}" \
-              -p "Shootit-${{ matrix.name }}.$2" -C "$stage" opt usr
+              -p "Aim-Trainer-${{ matrix.name }}.$2" -C "$stage" opt usr
           done
 
           # AppImage: runs on any distro
-          AD=Shootit.AppDir
-          mkdir -p "$AD/usr/lib" && cp -r dist/Shootit "$AD/usr/lib/shootit"
-          printf '#!/bin/sh\nHERE="$(dirname "$(readlink -f "$0")")"\nexec "$HERE/usr/lib/shootit/Shootit" "$@"\n' > "$AD/AppRun"
+          AD=Aim-Trainer.AppDir
+          mkdir -p "$AD/usr/lib" && cp -r dist/Aim-Trainer "$AD/usr/lib/aim-trainer"
+          printf '#!/bin/sh\nHERE="$(dirname "$(readlink -f "$0")")"\nexec "$HERE/usr/lib/aim-trainer/Aim-Trainer" "$@"\n' > "$AD/AppRun"
           chmod +x "$AD/AppRun"
-          cp packaging/shootit.desktop "$AD/shootit.desktop"
-          cp assets/shootit.png "$AD/shootit.png" && ln -s shootit.png "$AD/.DirIcon"
+          cp packaging/aim-trainer.desktop "$AD/aim-trainer.desktop"
+          cp assets/icon.png "$AD/aim-trainer.png" && ln -s aim-trainer.png "$AD/.DirIcon"
           curl -fsSL -o appimagetool "https://github.com/AppImage/appimagetool/releases/download/1.9.1/appimagetool-$(uname -m).AppImage"
           chmod +x appimagetool
-          ARCH=$(uname -m) ./appimagetool --appimage-extract-and-run "$AD" "Shootit-${{ matrix.name }}.AppImage"
+          ARCH=$(uname -m) ./appimagetool --appimage-extract-and-run "$AD" "Aim-Trainer-${{ matrix.name }}.AppImage"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Shootit-${{ matrix.name }}
-          path: Shootit-${{ matrix.name }}*
+          name: Aim-Trainer-${{ matrix.name }}
+          path: Aim-Trainer-${{ matrix.name }}*
 
   release:
     if: startsWith(github.ref, 'refs/tags/v') || inputs.tag != ''

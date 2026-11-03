@@ -1,4 +1,4 @@
-"""Shootit - an arcade aim trainer with five drills: Classic, Reaction, Precision, Tracking, Flick."""
+"""Aim Trainer - an arcade aim trainer with five drills: Classic, Reaction, Precision, Tracking, Flick."""
 import json
 import math
 import random
@@ -16,9 +16,9 @@ FPS = 60
 def scores_path():
     # per-user data dir: survives packaged one-file builds (their install dir is a wiped temp folder)
     try:
-        return Path(pygame.system.get_pref_path("Shootit", "Shootit")) / "highscores.json"
+        return Path(pygame.system.get_pref_path("Aim-Trainer", "Aim-Trainer")) / "highscores.json"
     except Exception:
-        return Path.home() / ".shootit_highscores.json"
+        return Path.home() / ".aim_trainer_highscores.json"
 
 
 SCORES_FILE = scores_path()
@@ -485,7 +485,7 @@ class Game:
     def __init__(self):
         pygame.init()
         self.win = pygame.display.set_mode((WIDTH, HEIGHT))
-        pygame.display.set_caption("Shootit - Aim Trainer")
+        pygame.display.set_caption("Aim Trainer")
         pygame.mouse.set_visible(False)
         self.clock = pygame.time.Clock()
         self.big = pygame.font.Font(None, 96)
@@ -548,7 +548,7 @@ class Game:
 
     def draw_menu(self):
         self.draw_bg()
-        self.text(self.big, "SHOOTIT", ACCENT, center=(WIDTH // 2, 80))
+        self.text(self.big, "AIM TRAINER", ACCENT, center=(WIDTH // 2, 80))
         self.text(self.small, "pick a drill", DIM, center=(WIDTH // 2, 136))
         for i, cls in enumerate(MODES):
             sel, r = i == self.sel, self.row_rect(i)

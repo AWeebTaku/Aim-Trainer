@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- WiX v5 MSI (per-machine) -> Shootit-windows-x64.msi. Built with: wix build ... -d Version=1.0.0 -d DistDir=<abs path to dist\Shootit> -->
+<!-- WiX v5 MSI (per-machine) -> Aim-Trainer-windows-x64.msi. Built with: wix build ... -d Version=1.0.0 -d DistDir=<abs path to dist\Aim-Trainer> -->
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Package Name="Shootit" Manufacturer="AWeebTaku" Version="$(Version)"
+  <Package Name="Aim Trainer" Manufacturer="AWeebTaku" Version="$(Version)"
            UpgradeCode="3F7D0B1E-5C2A-4E8B-9A61-7D2C4F9E1B20" Scope="perMachine">
-    <MajorUpgrade DowngradeErrorMessage="A newer version of Shootit is already installed." />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of Aim Trainer is already installed." />
     <MediaTemplate EmbedCab="yes" />
 
     <StandardDirectory Id="ProgramFiles64Folder">
-      <Directory Id="INSTALLFOLDER" Name="Shootit">
+      <Directory Id="INSTALLFOLDER" Name="Aim Trainer">
         <Files Include="$(DistDir)\**" />
       </Directory>
     </StandardDirectory>
 
     <StandardDirectory Id="ProgramMenuFolder">
       <Component Id="StartMenuShortcut" Guid="*">
-        <Shortcut Id="ShootitShortcut" Name="Shootit" Target="[INSTALLFOLDER]Shootit.exe" WorkingDirectory="INSTALLFOLDER" />
-        <RegistryValue Root="HKCU" Key="Software\Shootit" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        <Shortcut Id="AimTrainerShortcut" Name="Aim Trainer" Target="[INSTALLFOLDER]Aim-Trainer.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\Aim-Trainer" Name="installed" Type="integer" Value="1" KeyPath="yes" />
       </Component>
     </StandardDirectory>
   </Package>
