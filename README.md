@@ -2,20 +2,27 @@
 
 ![CI](../../actions/workflows/ci.yml/badge.svg) ![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
-A fast arcade aim trainer built with Python and [pygame-ce](https://pyga.me/). Targets pop up and shrink away. Click them before they vanish, keep your combo alive, and don't touch the bombs.
+A fast arcade aim trainer built with Python and [pygame-ce](https://pyga.me/). Five short drills for aim, accuracy, focus and reaction time, with saved best scores. Landing page: https://aweebtaku.github.io/Aim-Trainer/
 
-<p align="center"><img src="docs/gameplay.png" width="45%"> <img src="docs/menu.png" width="45%"></p>
+<p align="center"><img src="docs/menu.png" width="45%"> <img src="docs/gameplay.png" width="45%"></p>
+
+## Drills
+
+| Drill | Trains | How it works |
+|-------|--------|--------------|
+| **Classic** | Aim under pressure | Targets pop up and shrink away. Build combos (up to x8), grab gold (+life), never click bombs. Ends when you run out of lives |
+| **Reaction** | Reaction time | Wait for the screen to turn green, then click. Five rounds, scored by your average in ms. Clicking early repeats the round |
+| **Precision** | Accuracy | 20 small static targets, no time pressure. Up to 100 points per shot depending on how close to the center you land |
+| **Tracking** | Focus | Keep your cursor on a moving target for 30 seconds. Scored by time on target |
+| **Flick** | Speed and flick aim | Hit 30 targets as fast as you can. Each misclick adds 0.5 s. Lower time is better |
 
 ## Features
 
-- **Three difficulties** (Easy / Normal / Hard) with different lives and spawn speeds
-- **Combo multiplier**: every 5 hits in a row raises your multiplier, up to x8. Missing a click resets it
-- **Gold targets** are worth 5x and restore a life
-- **Bombs** (purple) cost a life if you click them. Let them fade
-- **Difficulty ramps** the longer you survive
+- **Three difficulties** (Easy / Normal / Hard): lives, target size and speed change. Reaction ignores difficulty
+- **Humane pacing**: Classic eases up over the first 3 minutes (targets end up at most 30% faster), then holds steady
 - Particles, floating score popups, screen shake, custom crosshair
-- **Persistent high scores** per difficulty
-- End-of-run stats: accuracy, targets/sec, best combo, time
+- **Persistent best scores** per drill and difficulty
+- End-of-run stats for every drill
 
 ## Download
 
@@ -91,7 +98,8 @@ Arch and other distros with "externally managed" Python (PEP 668) require the vi
 
 | Key | Action |
 |-----|--------|
-| `1` `2` `3` or click | Pick difficulty / start |
+| `1` to `5`, arrows + `Enter`, or click | Pick and start a drill |
+| `Left` / `Right` (menu) | Change difficulty |
 | Mouse click | Shoot |
 | `P` / `Space` | Pause |
 | `R` | Retry (game over) |

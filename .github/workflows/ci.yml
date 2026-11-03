@@ -14,12 +14,17 @@ jobs:
           python - <<'PY'
           import Shootit as S
           g = S.Game()
-          for d in S.DIFFICULTIES:
-              g.start(d)
-              for _ in range(3000):
-                  g.update(16)
-                  if g.targets: g.click((g.targets[0].x, g.targets[0].y))
-                  g.draw_play()
-                  if g.state == "over": break
-              g.draw_over(); g.draw_menu()
+          for i in range(len(S.MODES)):
+              for d in S.DIFFICULTIES:
+                  g.sel, g.diff = i, d
+                  g.start()
+                  for _ in range(30000):  # perfect player; Classic never aims so it ends by losing lives
+                      m, p = g.mode, g.mode.aim()
+                      m.update(16, p)
+                      if getattr(m, "phase", "go") != "wait":  # Reaction: click only once green
+                          m.click(p)
+                      m.draw()
+                      if m.done: break
+                  assert m.done, (type(m).__name__, d)
+                  g.finish(); g.draw_over(); g.draw_menu()
           PY
