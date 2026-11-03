@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Shootit - Aim Trainer</title>
 <meta name="description" content="Free aim trainer with five drills for aim, accuracy, focus and reaction time. Windows, macOS and Linux.">
+<script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.className="js"</script>
 <style>
 :root{--bg:#0a0e1c;--grid:#141c34;--panel:#161e38;--text:#e6ecff;--dim:#8f9bc2;--accent:#00dcbe;--red:#ff465a;--gold:#ffc828;--bomb:#9659ff;--r:14px}
 *{box-sizing:border-box}
@@ -16,8 +17,8 @@ a{color:inherit}
 nav{display:flex;justify-content:space-between;align-items:center;height:64px}
 nav b{color:var(--accent);letter-spacing:.12em}
 nav a{color:var(--dim);text-decoration:none}nav a:hover{color:var(--text)}
-.hero{display:grid;grid-template-columns:1fr 1.15fr;gap:48px;align-items:center;min-height:calc(100dvh - 64px);padding-bottom:48px}
-h1{font-size:clamp(2.4rem,5.5vw,4.4rem);line-height:1.05;letter-spacing:-.03em;margin:0 0 20px}
+.hero{display:grid;grid-template-columns:1fr 1.25fr;gap:48px;align-items:center;min-height:calc(100dvh - 64px);padding-bottom:48px}
+h1{font-size:clamp(2.4rem,5.2vw,4.2rem);line-height:1.05;letter-spacing:-.03em;margin:0 0 20px}
 h1 span{color:var(--accent)}
 .hero p{color:var(--dim);max-width:44ch;margin:0 0 28px}
 .btns{display:flex;gap:12px;flex-wrap:wrap}
@@ -25,27 +26,64 @@ h1 span{color:var(--accent)}
 .btn:active{transform:translateY(1px) scale(.98)}
 .primary{background:var(--accent);color:#04110f}.primary:hover{background:#33e8cf}
 .ghost{border:2px solid var(--panel);background:var(--panel)}.ghost:hover{border-color:var(--accent)}
-.shot{border-radius:var(--r);border:2px solid var(--panel);width:100%;height:auto;display:block;box-shadow:0 24px 60px rgba(0,220,190,.12)}
+.shot,canvas{border-radius:var(--r);border:2px solid var(--panel);width:100%;height:auto;display:block;box-shadow:0 24px 60px rgba(0,220,190,.12);background:var(--bg)}
+canvas{aspect-ratio:900/650;cursor:crosshair;touch-action:manipulation}
+[hidden]{display:none!important}
 section{padding:72px 0}
 h2{font-size:clamp(1.7rem,3.4vw,2.5rem);letter-spacing:-.02em;margin:0 0 32px}
+
+/* bento: asymmetric, each tile carries a game target as its emblem */
 .bento{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
-.tile{background:var(--panel);border-radius:var(--r);padding:26px;border-top:4px solid var(--accent)}
-.tile h3{margin:0 0 6px;font-size:1.25rem}.tile p{margin:0;color:var(--dim)}
-.t1{grid-column:span 4;border-color:var(--red)}.t2{grid-column:span 2;border-color:var(--gold)}
-.t3{grid-column:span 2;border-color:var(--bomb)}.t4{grid-column:span 4}
-.modes{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tile{background:var(--panel);border-radius:var(--r);padding:26px;border-top:4px solid var(--c);transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s}
+.tile:hover{transform:translateY(-3px);box-shadow:0 14px 34px -14px var(--c)}
+.tile h3{margin:14px 0 6px;font-size:1.25rem}.tile p{margin:0;color:var(--dim)}
+.t1{grid-column:span 4;--c:var(--red)}.t2{grid-column:span 2;--c:var(--gold)}
+.t3{grid-column:span 2;--c:var(--bomb)}.t4{grid-column:span 4;--c:var(--accent)}
+.emb{width:52px;height:52px;border-radius:50%;background:radial-gradient(circle,var(--text) 0 18%,var(--c) 18% 38%,var(--text) 38% 58%,var(--c) 58%)}
+.t3 .emb{background:radial-gradient(circle,#1e143c 0 24%,var(--c) 24% 58%,#1e143c 58% 72%,var(--c) 72%)}
+.row{display:flex;align-items:center;gap:18px}
+.mult{font-size:2.6rem;font-weight:800;letter-spacing:-.03em;color:var(--gold);min-width:2.4ch}
+
+/* drills: live canvas next to an info panel */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.tabs button{font:inherit;color:var(--dim);background:var(--panel);border:2px solid var(--panel);border-radius:var(--r);padding:10px 18px;cursor:pointer;transition:border-color .15s,color .15s}
+.tabs button:hover{color:var(--text)}
+.tabs button[aria-selected=true]{color:var(--text);border-color:var(--accent)}
+.drill{display:grid;grid-template-columns:1.7fr 1fr;gap:24px;align-items:start}
+.panel{background:var(--panel);border-radius:var(--r);padding:26px}
+.panel h3{margin:0 0 4px;font-size:1.4rem}
+.panel .k{color:var(--accent);font-weight:700;margin:0 0 14px}
+.panel p{margin:0 0 12px;color:var(--dim)}
+.panel p:last-child{margin:0;font-size:.95rem}
+
+.pair{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;align-items:center}
 dl{display:grid;grid-template-columns:auto 1fr;gap:10px 28px;margin:0;background:var(--panel);border-radius:var(--r);padding:26px}
 dt{font-weight:700}dd{margin:0;color:var(--dim)}
+dd a{color:var(--text)}
 code{background:var(--bg);padding:2px 8px;border-radius:8px;color:var(--accent);font-size:.9em}
+#rel{color:var(--dim);margin:16px 0 0}
 footer{padding:40px 0 56px;color:var(--dim);border-top:2px solid var(--panel)}
 footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
-@media(max-width:820px){.hero{grid-template-columns:1fr;min-height:0;gap:32px;padding-top:16px}.bento>*,.modes>*{grid-column:1/-1}.modes{grid-template-columns:1fr}.bento{grid-template-columns:1fr}}
-@media(prefers-reduced-motion:no-preference){.hero>*{animation:in .7s cubic-bezier(.16,1,.3,1) both}.hero>:last-child{animation-delay:.12s}@keyframes in{from{opacity:0;transform:translateY(18px)}}}
+
+@media(max-width:820px){
+ .hero{grid-template-columns:1fr;min-height:0;gap:32px;padding-top:16px}
+ .bento{grid-template-columns:1fr}.bento>*{grid-column:1/-1}
+ .drill,.pair{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:no-preference){
+ .hero>*{animation:in .7s cubic-bezier(.16,1,.3,1) both}.hero>:last-child{animation-delay:.12s}
+ @keyframes in{from{opacity:0;transform:translateY(18px)}}
+ .t2 .emb{animation:pulse 1.6s ease-in-out infinite}
+ @keyframes pulse{50%{transform:scale(1.14)}}
+ .js .rv{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+ .js .rv.in{opacity:1;transform:none}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 <nav><b>SHOOTIT</b><a href="https://github.com/AWeebTaku/Aim-Trainer">GitHub</a></nav>
+
 <header class="hero">
 <div>
 <h1>Hit it before it <span>vanishes.</span></h1>
@@ -55,50 +93,286 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 <a class="btn ghost" href="#install">All platforms</a>
 </div>
 </div>
-<img class="shot" src="gameplay.png" width="900" height="650" alt="Shootit gameplay: a red and white bullseye target on a dark grid with a teal crosshair, score 460 and a x3 combo in the top bar">
+<div>
+<img class="shot" id="poster" src="gameplay.png" width="900" height="650" alt="Shootit gameplay: a red and white bullseye target on a dark grid with a teal crosshair, score 460 and a x3 combo in the top bar">
+<canvas id="hero" width="900" height="650" hidden role="img" aria-label="Live Shootit demo. It plays itself until you move your mouse in or tap, then you can shoot the targets yourself."></canvas>
+</div>
 </header>
 
-<section>
+<section class="rv">
 <h2>Simple to learn, hard to master</h2>
 <div class="bento">
-<div class="tile t1"><h3>Keep the combo alive</h3><p>Every 5 hits in a row raises your multiplier, up to x8. Clicking empty space resets it.</p></div>
-<div class="tile t2"><h3>Gold heals</h3><p>Worth 5x points and restores a life.</p></div>
-<div class="tile t3"><h3>Bombs bite</h3><p>Click one and you lose a life. Let it fade.</p></div>
-<div class="tile t4"><h3>A pace you can actually keep up with</h3><p>Classic eases up over the first three minutes, then holds steady. Pick Easy, Normal or Hard.</p></div>
+<div class="tile t1"><div class="row"><div class="emb"></div><div class="mult">x<span id="mult">8</span></div></div><h3>Keep the combo alive</h3><p>Every 5 hits in a row raises your multiplier, up to x8. Clicking empty space resets it.</p></div>
+<div class="tile t2"><div class="emb"></div><h3>Gold heals</h3><p>Worth 5x points and restores a life.</p></div>
+<div class="tile t3"><div class="emb"></div><h3>Bombs bite</h3><p>Click one and you lose a life. Let it fade.</p></div>
+<div class="tile t4"><div class="emb"></div><h3>A pace you can actually keep up with</h3><p>Classic eases up over the first three minutes, then holds steady. Pick Easy, Normal or Hard.</p></div>
 </div>
 </section>
 
-<section>
-<h2>Five drills, one menu</h2>
-<dl>
-<dt>Classic</dt><dd>Shrinking targets. Build a combo, grab gold, dodge bombs.</dd>
-<dt>Reaction</dt><dd>Click the moment the screen turns green. Scored in milliseconds.</dd>
-<dt>Precision</dt><dd>20 small targets with no clock. The closer to the center, the more points.</dd>
-<dt>Tracking</dt><dd>Keep your cursor on a moving target for 30 seconds.</dd>
-<dt>Flick</dt><dd>Hit 30 targets as fast as you can. Misses cost half a second.</dd>
-</dl>
+<section class="rv" id="try">
+<h2>Try the drills right here</h2>
+<div class="tabs" role="tablist" aria-label="Drills" id="tabs"></div>
+<div class="drill" role="tabpanel" id="panel">
+<canvas id="drills" width="900" height="650" role="img" aria-label="Interactive drill demo. Needs a mouse or touch. It plays itself until you take over."></canvas>
+<div class="panel"><h3 id="d-t"></h3><p class="k" id="d-k"></p><p id="d-d"></p><p id="d-n"></p></div>
+</div>
 </section>
 
-<section class="modes">
+<section class="rv">
+<h2>The real app</h2>
+<div class="pair">
 <img class="shot" src="menu.png" width="900" height="650" loading="lazy" alt="Shootit menu listing the five drills with saved best scores and Easy, Normal and Hard difficulty buttons">
-<img class="shot" src="precision.png" width="900" height="650" loading="lazy" alt="Precision drill: a single bullseye target on a dark grid with the shot counter and score in the top bar">
+<img class="shot" src="tracking.png" width="900" height="650" loading="lazy" alt="Tracking drill: one teal target on a dark grid with the percent on target and time left in the top bar">
+</div>
 </section>
 
-<section id="install">
+<section class="rv" id="install">
 <h2>Download</h2>
 <dl>
 <dt>Windows</dt><dd><a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-windows-x64.zip">Shootit-windows-x64.zip</a></dd>
 <dt>macOS</dt><dd><a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-macos-arm64.zip">Apple Silicon</a> or <a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-macos-x64.zip">Intel</a></dd>
 <dt>Linux</dt><dd><a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-linux-x64.tar.gz">x86_64</a> or <a href="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-linux-arm64.tar.gz">ARM64</a></dd>
-<dt>From source</dt><dd><code>pip install pygame-ce &amp;&amp; python Shootit.py</code></dd>
+<dt>From source</dt><dd><code>pip install pygame-ce &amp;&amp; python main.py</code></dd>
 </dl>
+<p id="rel" hidden></p>
 </section>
 </div>
 <footer><div class="wrap"><span>MIT licensed. Made by AWeebTaku.</span><a href="https://github.com/AWeebTaku/Aim-Trainer">Source on GitHub</a></div></footer>
+
 <script>
-// label the main button for the visitor's OS; falls back to the releases page
-var p=navigator.userAgent,b="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/",f=/Win/.test(p)?["windows-x64.zip","Windows"]:/Mac/.test(p)?["macos-arm64.zip","macOS"]:/Linux/.test(p)&&!/Android/.test(p)?["linux-x64.tar.gz","Linux"]:null;
-if(f){var a=document.getElementById("dl");a.href=b+"Shootit-"+f[0];a.textContent="Download for "+f[1]}
+(()=>{
+"use strict";
+const W=900,H=650,BAR=56,PAD=40,TAU=Math.PI*2;
+const C={bg:"#0a0e1c",grid:"#141c34",panel:"#161e38",text:"#e6ecff",dim:"#8f9bc2",accent:"#00dcbe",red:"#ff465a",gold:"#ffc828",bomb:"#9659ff"};
+const rm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const dist=(a,b,c,d)=>Math.hypot(a-c,b-d);
+const gauss=()=>(Math.random()+Math.random()+Math.random()-1.5)*2;   // roughly N(0,1)
+const ease=(v,t,dt,k)=>v+(t-v)*Math.min(1,dt*k);
+const prune=a=>{for(let i=a.length-1;i>=0;i--)if(a[i].l<=0)a.splice(i,1)};
+const store={get(){try{return +localStorage.getItem("shootit-best")||0}catch(e){return 0}},set(v){try{localStorage.setItem("shootit-best",v)}catch(e){}}};
+
+/* ---------- shared drawing (mirrors the desktop game's look) ---------- */
+const bgc=document.createElement("canvas");bgc.width=W*2;bgc.height=H*2;
+{const g=bgc.getContext("2d");g.scale(2,2);g.fillStyle=C.bg;g.fillRect(0,0,W,H);g.strokeStyle=C.grid;g.lineWidth=1;g.beginPath();
+ for(let x=0;x<=W;x+=50){g.moveTo(x+.5,0);g.lineTo(x+.5,H)}for(let y=0;y<=H;y+=50){g.moveTo(0,y+.5);g.lineTo(W,y+.5)}g.stroke()}
+const drawBg=g=>g.drawImage(bgc,0,0,W,H);
+function txt(g,s,x,y,o={}){g.font=`${o.w||600} ${o.s||18}px system-ui,-apple-system,"Segoe UI",sans-serif`;g.fillStyle=o.c||C.text;g.textAlign=o.a||"left";g.textBaseline="middle";g.fillText(s,x,y)}
+function rings(g,x,y,r,a=C.red,b=C.text){for(const[k,c]of[[1,a],[.8,b],[.6,a],[.4,b]]){g.fillStyle=c;g.beginPath();g.arc(x,y,Math.max(r*k,.5),0,TAU);g.fill()}}
+function hud(g,left,mid=[]){g.fillStyle=C.panel;g.fillRect(0,0,W,BAR);g.fillStyle=C.accent;g.fillRect(0,BAR-2,W,2);txt(g,left,16,28,{s:28,w:700});for(const[s,x,c]of mid)txt(g,s,x,28,{s:19,c:c||C.dim})}
+function ghostRing(g,x,y){g.strokeStyle="rgba(0,220,190,.7)";g.lineWidth=2;g.beginPath();g.arc(x,y,12,0,TAU);g.stroke();g.beginPath();
+ g.moveTo(x-18,y);g.lineTo(x-6,y);g.moveTo(x+6,y);g.lineTo(x+18,y);g.moveTo(x,y-18);g.lineTo(x,y-6);g.moveTo(x,y+6);g.lineTo(x,y+18);g.stroke()}
+function overlay(g,title,sub){g.fillStyle="rgba(10,14,28,.84)";g.fillRect(0,BAR,W,H-BAR);txt(g,title,W/2,H/2-44,{s:56,w:800,a:"center",c:C.accent});
+ sub.forEach((s,i)=>txt(g,s,W/2,H/2+14+i*34,{s:22,a:"center",c:i?C.dim:C.text}))}
+function pill(g,s){g.font="600 18px system-ui,sans-serif";const w=g.measureText(s).width+40,x=(W-w)/2,y=H-56;g.fillStyle="rgba(22,30,56,.92)";g.beginPath();
+ g.roundRect?g.roundRect(x,y,w,36,14):g.rect(x,y,w,36);g.fill();txt(g,s,W/2,y+18,{s:18,a:"center",c:C.dim})}
+
+/* ---------- stage: one canvas, swappable drill, ghost player until you take over ---------- */
+class Stage{
+ constructor(cv,make){
+  this.cv=cv;this.g=cv.getContext("2d");this.g.scale(cv.width/W,cv.height/H);
+  this.m={x:W/2,y:H/2};this.userAt=-1e9;this.touched=false;this.on=false;this.vis=false;this.tok=0;this.enabled=!rm;
+  const upd=e=>{const r=cv.getBoundingClientRect();this.m.x=(e.clientX-r.left)*W/r.width;this.m.y=(e.clientY-r.top)*H/r.height;this.userAt=performance.now();this.touched=true};
+  cv.addEventListener("pointermove",upd);
+  cv.addEventListener("pointerdown",e=>{upd(e);if(!this.enabled){this.enabled=true;this.sync();return}this.mode.click(this.m.x,this.m.y,true)});
+  new IntersectionObserver(([en])=>{this.vis=en.isIntersecting;this.sync()}).observe(cv);
+  document.addEventListener("visibilitychange",()=>this.sync());
+  this.set(make);
+ }
+ get ghost(){return !rm&&performance.now()-this.userAt>3000}
+ set(make){this.mode=make(this);if(!this.enabled)this.paint()}
+ paint(){this.mode.draw(this.g);if(!this.enabled)overlay(this.g,"Click to play",["Autoplay is off (reduced motion)"])}
+ sync(){
+  const go=this.vis&&!document.hidden&&this.enabled;
+  if(!go){this.on=false;this.tok++;return}
+  if(this.on)return;
+  this.on=true;const tok=++this.tok;this.last=performance.now();
+  const loop=t=>{if(tok!==this.tok)return;const dt=Math.min(t-this.last,50);this.last=t;this.mode.update(dt);this.mode.draw(this.g);
+   if(this.ghost)pill(this.g,"Demo playing. Move in and click to take over.");requestAnimationFrame(loop)};
+  requestAnimationFrame(loop);
+ }
+}
+
+/* ---------- drills ---------- */
+function classic(s){
+ const T=[],P=[],O=[];let score=0,combo=0,lives=5,t=0,spawn=300,over=0,played=false,best=store.get(),gx=W/2,gy=H/2,gt=null,gw=0;
+ const ramp=()=>Math.min(t/180000,1),mult=()=>Math.min(1+(combo/5|0),8);
+ const burst=(x,y,c,n=16)=>{for(let i=0;i<n;i++){const a=rnd(0,TAU),v=rnd(1,6);P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:30,c})}};
+ const lose=()=>{combo=0;if(--lives<=0){over=2800;if(played&&score>best){best=score;store.set(best)}}};
+ function click(x,y,user){
+  if(over){if(user)over=1;return}
+  if(user)played=true;
+  for(let i=T.length-1;i>=0;i--){const k=T[i];if(dist(x,y,k.x,k.y)<=k.s){T.splice(i,1);
+   if(k.kind==="bomb"){burst(k.x,k.y,C.bomb,26);O.push({x:k.x,y:k.y,s:"BOMB",c:C.bomb,l:45});lose()}
+   else{const gold=k.kind==="gold",p=(gold?50:10)*mult();combo++;score+=p;if(gold&&lives<5)lives++;burst(k.x,k.y,gold?C.gold:C.red);O.push({x:k.x,y:k.y,s:"+"+p,c:gold?C.gold:C.text,l:45})}
+   return}}
+  combo=0}
+ function update(dt){
+  if(over){over-=dt;if(over<=0)s.set(classic);return}
+  t+=dt;spawn-=dt;
+  if(spawn<=0){const r=Math.random(),kind=r<.06?"gold":r<.1+.06*ramp()?"bomb":"normal";
+   T.push({x:rnd(PAD,W-PAD),y:rnd(BAR+PAD,H-PAD),s:0,d:1,rate:.2*(1+.3*ramp())*(kind==="gold"?1.4:1),kind,skip:Math.random()<.12});spawn=700-200*ramp()}
+  for(let i=T.length-1;i>=0;i--){const k=T[i],st=k.rate*dt*.18;if(k.s+st>=32)k.d=-1;k.s+=k.d*st;
+   if(k.s<=0){T.splice(i,1);if(k.kind!=="bomb"){O.push({x:k.x,y:k.y,s:"MISS",c:C.dim,l:45});lose();if(over)break}}}
+  for(const p of P){p.x+=p.vx;p.y+=p.vy;p.vy+=.15;p.l--}for(const o of O){o.y--;o.l--}prune(P);prune(O);
+  if(s.ghost&&!over){
+   if(!gt||!T.includes(gt)){gt=null;for(const k of T)if(k.kind!=="bomb"&&!k.skip&&k.s>10&&(!gt||k.s>gt.s))gt=k}
+   if(gt){gx=ease(gx,gt.x,dt,.012);gy=ease(gy,gt.y,dt,.012);gw-=dt;
+    if(dist(gx,gy,gt.x,gt.y)<gt.s*.55&&gw<=0&&gt.s>12){click(gt.x,gt.y,false);gt=null;gw=rnd(120,300)}}}
+ }
+ function draw(g){
+  drawBg(g);
+  for(const k of T){if(k.kind==="bomb"){rings(g,k.x,k.y,k.s,C.bomb,"#1e143c");g.strokeStyle=C.text;g.lineWidth=3;g.beginPath();
+    g.moveTo(k.x-6,k.y-6);g.lineTo(k.x+6,k.y+6);g.moveTo(k.x-6,k.y+6);g.lineTo(k.x+6,k.y-6);g.stroke()}else rings(g,k.x,k.y,k.s,k.kind==="gold"?C.gold:C.red)}
+  for(const p of P){g.fillStyle=p.c;g.beginPath();g.arc(p.x,p.y,Math.max(1,4*p.l/30),0,TAU);g.fill()}
+  for(const o of O)txt(g,o.s,o.x,o.y-30,{s:22,c:o.c,a:"center"});
+  hud(g,score.toLocaleString(),[[`x${mult()}  combo ${combo}`,210,mult()>1?C.gold:C.dim]].concat(best?[[`your best ${best.toLocaleString()}`,430]]:[]));
+  for(let i=0;i<5;i++){g.fillStyle=i<lives?C.red:C.grid;g.beginPath();g.arc(W-20-i*24,BAR/2,8,0,TAU);g.fill()}
+  if(s.ghost&&!over)ghostRing(g,gx,gy);
+  if(over)overlay(g,"Game over",["Score "+score.toLocaleString(),"Click to play again"]);
+ }
+ return{update,draw,click};
+}
+
+function reaction(s){
+ let phase="wait",timer=rnd(1400,3000),t0=0,ghostAt=0,last=0,early=0,over=0;const times=[];
+ const wait=()=>{phase="wait";timer=rnd(1400,3200)};
+ function click(x,y,user){
+  if(over){if(user)over=1;return}
+  if(phase==="wait"){early++;phase="early";timer=1000}
+  else if(phase==="go"){last=Math.round(performance.now()-t0);times.push(last);phase="result";timer=1100}
+  else timer=0}
+ function update(dt){
+  if(over){over-=dt;if(over<=0)s.set(reaction);return}
+  if(phase==="go"&&s.ghost&&performance.now()-t0>=ghostAt)click(0,0,false);
+  timer-=dt;if(timer>0)return;
+  if(phase==="wait"){phase="go";timer=1e9;t0=performance.now();ghostAt=rnd(210,330)}
+  else if(phase==="early"||(phase==="result"&&times.length<5))wait();
+  else if(phase==="result")over=3500}
+ function draw(g){
+  g.fillStyle={wait:"#46121e",early:"#46121e",go:C.accent,result:C.panel}[phase];g.fillRect(0,0,W,H);
+  const m={wait:["Wait for green...",C.text],go:["CLICK!","#04110f"],early:["Too soon!",C.red],result:[last+" ms",C.accent]}[phase];
+  txt(g,m[0],W/2,H/2,{s:84,w:800,a:"center",c:m[1]});
+  hud(g,`Round ${Math.min(times.length+(phase==="result"?0:1),5)}/5`,[[`too soon: ${early}`,300]]);
+  if(over)overlay(g,Math.round(times.reduce((a,b)=>a+b,0)/times.length)+" ms",["Average over 5 rounds",times.join(", ")+" ms","Click to retry"]);
+ }
+ return{update,draw,click};
+}
+
+function precision(s){
+ const N=5,R=19;let n=0,pts=0,x,y,ax,ay,gx=W/2,gy=H/2,gw=300,over=0;const shots=[],O=[];
+ function nxt(){x=rnd(PAD+R,W-PAD-R);y=rnd(BAR+PAD+R,H-PAD-R);ax=x+gauss()*R*.35;ay=y+gauss()*R*.35;gw=rnd(250,500)}
+ nxt();
+ function click(cx,cy,user){
+  if(over){if(user)over=1;return}
+  const d=dist(cx,cy,x,y),p=d<=R?Math.round(100*(1-d/R)):0;pts+=p;
+  shots.push({cx,cy,x,y,l:110});O.push({x,y,s:p?"+"+p:"MISS",c:p>90?C.gold:p?C.text:C.dim,l:60});
+  if(++n>=N)over=3500;else nxt()}
+ function update(dt){
+  if(over){over-=dt;if(over<=0)s.set(precision);return}
+  for(const a of shots)a.l--;for(const o of O){o.y--;o.l--}prune(shots);prune(O);
+  if(s.ghost){gx=ease(gx,ax,dt,.008);gy=ease(gy,ay,dt,.008);gw-=dt;if(dist(gx,gy,ax,ay)<3&&gw<=0)click(gx,gy,false)}}
+ function draw(g){
+  drawBg(g);if(!over)rings(g,x,y,R);
+  for(const a of shots){g.globalAlpha=Math.min(1,a.l/60);g.strokeStyle=C.accent;g.lineWidth=2;g.beginPath();g.moveTo(a.cx,a.cy);g.lineTo(a.x,a.y);
+   g.moveTo(a.cx-6,a.cy);g.lineTo(a.cx+6,a.cy);g.moveTo(a.cx,a.cy-6);g.lineTo(a.cx,a.cy+6);g.stroke()}g.globalAlpha=1;
+  for(const o of O)txt(g,o.s,o.x,o.y-R-16,{s:22,c:o.c,a:"center"});
+  hud(g,pts.toLocaleString(),[[`shot ${Math.min(n+1,N)}/${N}`,210]]);
+  if(s.ghost&&!over)ghostRing(g,gx,gy);
+  if(over)overlay(g,pts+" / "+N*100,["Closer to the center scores more","Click to retry"]);
+ }
+ return{update,draw,click};
+}
+
+function tracking(s){
+ const R=34,SP=200,DUR=12000;let x=W/2,y=H/2,a=rnd(0,TAU),turn=0,ti=0,t=0,on=0,isOn=false,gx=x,gy=y,over=0;
+ function update(dt){
+  if(over){over-=dt;if(over<=0)s.set(tracking);return}
+  t+=dt;ti-=dt;if(ti<=0){turn=rnd(-2.5,2.5);ti=rnd(500,1500)}
+  a+=turn*dt/1000;x+=Math.cos(a)*SP*dt/1000;y+=Math.sin(a)*SP*dt/1000;
+  if(x<R||x>W-R){x=Math.min(Math.max(x,R),W-R);a=Math.PI-a}
+  if(y<BAR+R||y>H-R){y=Math.min(Math.max(y,BAR+R),H-R);a=-a}
+  let mx=s.m.x,my=s.m.y;
+  if(s.ghost){gx=ease(gx,x+Math.sin(t/230)*14,dt,.01);gy=ease(gy,y+Math.cos(t/310)*14,dt,.01);mx=gx;my=gy}
+  isOn=dist(mx,my,x,y)<=R;if(isOn)on+=dt;if(t>=DUR)over=3500}
+ const pct=()=>Math.round(on/Math.max(t,1)*100);
+ function draw(g){
+  drawBg(g);rings(g,x,y,R,isOn?C.accent:C.red);
+  hud(g,pct()+"% on target",[[`${Math.max((DUR-t)/1000,0).toFixed(1)}s left`,330]]);
+  if(s.ghost&&!over)ghostRing(g,gx,gy);
+  if(over)overlay(g,pct()+"%",["Time on target","Click to retry"]);
+ }
+ return{update,draw,click(x,y,user){if(over&&user)over=1}};
+}
+
+function flick(s){
+ const N=10,R=22;let n=0,miss=0,t=0,x=W/2,y=H/2,gx=W/2,gy=H/2,gw=400,over=0;
+ function nxt(){const px=x,py=y;for(let i=0;i<20;i++){x=rnd(PAD+R,W-PAD-R);y=rnd(BAR+PAD+R,H-PAD-R);if(dist(px,py,x,y)>220)break}}
+ nxt();
+ const score=()=>((t+miss*500)/1000).toFixed(2);
+ function click(cx,cy,user){
+  if(over){if(user)over=1;return}
+  if(dist(cx,cy,x,y)>R){miss++;return}
+  if(++n>=N)over=3500;else nxt()}
+ function update(dt){
+  if(over){over-=dt;if(over<=0)s.set(flick);return}
+  t+=dt;
+  if(s.ghost){gx=ease(gx,x,dt,.02);gy=ease(gy,y,dt,.02);gw-=dt;if(dist(gx,gy,x,y)<R*.5){if(gw<=0){click(x,y,false);gw=rnd(80,200)}}}}
+ function draw(g){
+  drawBg(g);if(!over)rings(g,x,y,R);
+  hud(g,score()+"s",[[`${n}/${N}`,210],[`misses ${miss}`,330,miss?C.red:C.dim]]);
+  if(s.ghost&&!over)ghostRing(g,gx,gy);
+  if(over)overlay(g,score()+"s",["Each misclick adds 0.5 s","Click to retry"]);
+ }
+ return{update,draw,click};
+}
+
+/* ---------- wiring ---------- */
+const DRILLS={
+ classic:{f:classic,t:"Classic",k:"Aim under pressure",d:"Targets shrink away. Build combos up to x8, grab gold for a life, never click a bomb.",n:"Same rules as the app. It ends when you run out of lives."},
+ reaction:{f:reaction,t:"Reaction",k:"Reaction time",d:"Wait for the screen to turn green, then click. Scored by your average in milliseconds.",n:"Same as the app: 5 rounds. Clicking early repeats the round."},
+ precision:{f:precision,t:"Precision",k:"Accuracy",d:"Small targets and no clock. Up to 100 points per shot, based on how close to the center you land.",n:"The app has 20 shots. This demo has 5."},
+ tracking:{f:tracking,t:"Tracking",k:"Focus",d:"Keep your cursor on the moving target and stay locked on as it curves around.",n:"The app runs 30 seconds. This demo runs 12."},
+ flick:{f:flick,t:"Flick",k:"Speed",d:"Hit every target as fast as you can. Each misclick adds half a second to your time.",n:"The app has 30 targets. This demo has 10."}
+};
+const hero=document.getElementById("hero"),poster=document.getElementById("poster");
+hero.hidden=false;poster.hidden=true;
+new Stage(hero,classic);
+
+const stage=new Stage(document.getElementById("drills"),reaction),tabs=document.getElementById("tabs"),ids=Object.keys(DRILLS);
+function pickTab(id,focus){
+ for(const b of tabs.children){const on=b.dataset.id===id;b.setAttribute("aria-selected",on);b.tabIndex=on?0:-1;if(on&&focus)b.focus()}
+ const d=DRILLS[id];stage.set(d.f);
+ document.getElementById("d-t").textContent=d.t;document.getElementById("d-k").textContent=d.k;
+ document.getElementById("d-d").textContent=d.d;document.getElementById("d-n").textContent=d.n;
+ document.getElementById("panel").setAttribute("aria-label",d.t+" drill");
+}
+for(const id of ids){const b=document.createElement("button");b.type="button";b.role="tab";b.dataset.id=id;b.textContent=DRILLS[id].t;
+ b.onclick=()=>pickTab(id);
+ b.onkeydown=e=>{const i=ids.indexOf(id),j=e.key==="ArrowRight"?i+1:e.key==="ArrowLeft"?i-1:-1;if(j>=0){e.preventDefault();pickTab(ids[(j+ids.length)%ids.length],true)}};
+ tabs.appendChild(b)}
+pickTab("reaction");
+
+/* combo tile: the multiplier steps up the way it does in the game */
+const mm=document.getElementById("mult");
+if(mm&&!rm){let v=1;mm.textContent=1;setInterval(()=>{if(!document.hidden){v=v%8+1;mm.textContent=v}},900)}
+
+/* reveal sections as they scroll into view */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll(".rv").forEach(el=>io.observe(el));
+
+/* button for the visitor's OS */
+const ua=navigator.userAgent,base="https://github.com/AWeebTaku/Aim-Trainer/releases/latest/download/Shootit-";
+const f=/Win/.test(ua)?["windows-x64.zip","Windows"]:/Mac/.test(ua)?["macos-arm64.zip","macOS"]:/Linux/.test(ua)&&!/Android/.test(ua)?["linux-x64.tar.gz","Linux"]:null;
+if(f){const a=document.getElementById("dl");a.href=base+f[0];a.textContent="Download for "+f[1]}
+
+/* latest release info from GitHub; silently skipped if the API is unreachable */
+fetch("https://api.github.com/repos/AWeebTaku/Aim-Trainer/releases/latest",{headers:{Accept:"application/vnd.github+json"}})
+ .then(r=>r.ok?r.json():Promise.reject()).then(j=>{
+  const n=(j.assets||[]).reduce((a,x)=>a+x.download_count,0),el=document.getElementById("rel");
+  const d=new Date(j.published_at).toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});
+  el.textContent=`Latest release ${j.tag_name}, published ${d}.`+(n?` ${n.toLocaleString()} download${n===1?"":"s"} so far.`:"");el.hidden=false}).catch(()=>{});
+})();
 </script>
 </body>
 </html>

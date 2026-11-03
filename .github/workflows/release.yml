@@ -32,19 +32,19 @@ jobs:
       - name: Build (Windows)
         if: runner.os == 'Windows'
         run: |
-          pyinstaller --onefile --noconsole --name Shootit Shootit.py
+          pyinstaller --onefile --noconsole --name Shootit main.py
           Compress-Archive dist/Shootit.exe Shootit-${{ matrix.name }}.zip
       - name: Build (macOS)
         if: runner.os == 'macOS'
         run: |
-          pyinstaller --windowed --name Shootit Shootit.py
+          pyinstaller --windowed --name Shootit main.py
           ditto -c -k --sequesterRsrc --keepParent dist/Shootit.app Shootit-${{ matrix.name }}.zip
       - name: Build (Linux)
         if: runner.os == 'Linux'
         env:
           TAG: ${{ inputs.tag || github.ref_name }}
         run: |
-          pyinstaller --onefile --name Shootit Shootit.py
+          pyinstaller --onefile --name Shootit main.py
           tar -czf Shootit-${{ matrix.name }}.tar.gz -C dist Shootit
 
           # distro packages (.deb Debian/Ubuntu, .rpm Fedora/RHEL/openSUSE, .pkg.tar.zst Arch) via fpm

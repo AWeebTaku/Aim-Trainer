@@ -72,7 +72,7 @@ Then:
 
 ```bash
 pip install -r requirements.txt
-python Shootit.py
+python main.py
 ```
 
 ### Linux notes
@@ -91,7 +91,7 @@ Arch and other distros with "externally managed" Python (PEP 668) require the vi
 ### Troubleshooting
 
 - **Use `pygame-ce`, not `pygame`.** They share the `import pygame` name and conflict when both are installed. If you see font or import errors (common on Python 3.13+), run `pip uninstall pygame && pip install --force-reinstall pygame-ce`.
-- **No window on Wayland-only setups:** try `SDL_VIDEODRIVER=wayland python Shootit.py` or `SDL_VIDEODRIVER=x11 ...`.
+- **No window on Wayland-only setups:** try `SDL_VIDEODRIVER=wayland python main.py` or `SDL_VIDEODRIVER=x11 ...`.
 - **High scores** are stored per user: `~/.local/share/Shootit/Shootit/` (Linux), `~/Library/Application Support/Shootit/Shootit/` (macOS), `%APPDATA%\Shootit\Shootit\` (Windows). Delete `highscores.json` there to reset.
 
 ## Controls
@@ -121,7 +121,7 @@ To build locally for your own OS:
 
 ```bash
 pip install pyinstaller
-pyinstaller --onefile --noconsole --name Shootit Shootit.py   # use --windowed instead on macOS
+pyinstaller --onefile --noconsole --name Shootit main.py   # use --windowed instead on macOS
 ```
 
 The result is in `dist/` (not tracked in git).

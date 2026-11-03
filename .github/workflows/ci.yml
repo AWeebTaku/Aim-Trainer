@@ -12,7 +12,7 @@ jobs:
         env: { SDL_VIDEODRIVER: dummy, SDL_AUDIODRIVER: dummy }
         run: |
           python - <<'PY'
-          import Shootit as S
+          import main as S
           g = S.Game()
           for i in range(len(S.MODES)):
               for d in S.DIFFICULTIES:
